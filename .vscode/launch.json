@@ -1,0 +1,15 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug tap-mysql",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "tap_mysql.__init__",
+      "args": [
+        "--config", "config.json",
+        "--catalog", "catalog.json"
+      ]
+    }
+  ]
+}
