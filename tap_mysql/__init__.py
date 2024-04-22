@@ -73,6 +73,7 @@ FLOAT_TYPES = set(['float', 'double'])
 
 DATETIME_TYPES = set(['datetime', 'timestamp', 'date', 'time'])
 
+SPATIAL_TYPES = set(['point'])
 
 def schema_for_column(c):
     '''Returns the Schema object for the given Column.'''
@@ -117,6 +118,10 @@ def schema_for_column(c):
     elif data_type in DATETIME_TYPES:
         result.type = ['null', 'string']
         result.format = 'date-time'
+
+    elif data_type in SPATIAL_TYPES:
+        result.type = ['null', 'string']
+        result.format = 'point'
 
     else:
         result = Schema(None,
