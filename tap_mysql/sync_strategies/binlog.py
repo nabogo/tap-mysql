@@ -137,6 +137,7 @@ def row_to_singer_record(catalog_entry, version, db_column_map, row, time_extrac
 
     for column_name, val in row.items():
         property_type = catalog_entry.schema.properties[column_name].type
+        property_format = catalog_entry.schema.properties[column_name].format
         db_column_type = db_column_map.get(column_name)
 
         if isinstance(val, (datetime.datetime, datetime.date, datetime.timedelta)):
@@ -156,6 +157,9 @@ def row_to_singer_record(catalog_entry, version, db_column_map, row, time_extrac
             else:
                 boolean_representation = True
             row_to_persist[column_name] = boolean_representation
+
+        elif db_column_type == FIELD_TYPE.GEOMETRY and property_format == 'point':
+            row_to_persist[column_name] = common.get_json_from_binary_point(val)
 
         else:
             row_to_persist[column_name] = val
