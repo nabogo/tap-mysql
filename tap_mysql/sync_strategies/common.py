@@ -147,6 +147,15 @@ def to_utc_datetime_str(val):
 
     return utils.strftime(the_datetime.astimezone(tz=pytz.UTC))
 
+def get_json_from_binary_point(val):
+    result = struct.unpack('<IcLdd', val)
+    srid, lon, lat = result[0], result[3], result[4]
+    return json.dumps({
+        'srid': srid,
+        'lon': lon,
+        'lat': lat
+    })
+
 def row_to_singer_record(catalog_entry, version, row, columns, time_extracted):
     row_to_persist = ()
     for idx, elem in enumerate(row):
@@ -159,13 +168,7 @@ def row_to_singer_record(catalog_entry, version, row, columns, time_extracted):
 
         elif isinstance(elem, bytes):
             if property_format == 'point':
-                result = struct.unpack('<IcLdd', elem)
-                srid, lon, lat = result[0], result[3], result[4]
-                row_to_persist += (json.dumps({
-                    'srid': srid,
-                    'lon': lon,
-                    'lat': lat
-                }),)
+                row_to_persist += (get_json_from_binary_point(elem),)
             else:
                 # for BIT value, treat 0 as False and anything else as True
                 boolean_representation = elem != b'\x00'
