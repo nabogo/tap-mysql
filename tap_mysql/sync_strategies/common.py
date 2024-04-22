@@ -8,6 +8,8 @@ import time
 import tzlocal
 import pytz
 import pymysql
+import struct
+import json
 
 import singer.metrics as metrics
 from singer import metadata
@@ -149,15 +151,25 @@ def row_to_singer_record(catalog_entry, version, row, columns, time_extracted):
     row_to_persist = ()
     for idx, elem in enumerate(row):
         property_type = catalog_entry.schema.properties[columns[idx]].type
+        property_format = catalog_entry.schema.properties[columns[idx]].format
 
         if isinstance(elem, (datetime.datetime, datetime.date, datetime.timedelta)):
             the_utc_date = to_utc_datetime_str(elem)
             row_to_persist += (the_utc_date,)
 
         elif isinstance(elem, bytes):
-            # for BIT value, treat 0 as False and anything else as True
-            boolean_representation = elem != b'\x00'
-            row_to_persist += (boolean_representation,)
+            if property_format == 'point':
+                result = struct.unpack('<IcLdd', elem)
+                srid, lon, lat = result[0], result[3], result[4]
+                row_to_persist += (json.dumps({
+                    'srid': srid,
+                    'lon': lon,
+                    'lat': lat
+                }),)
+            else:
+                # for BIT value, treat 0 as False and anything else as True
+                boolean_representation = elem != b'\x00'
+                row_to_persist += (boolean_representation,)
 
         elif 'boolean' in property_type or property_type == 'boolean':
             if elem is None:
