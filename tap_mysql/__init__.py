@@ -716,12 +716,23 @@ def log_server_params(mysql_conn):
         except pymysql.err.InternalError as e:
             LOGGER.warning("Encountered error checking server params. Error: (%s) %s", *e.args)
 
+def ensure_cryptography_installed():
+    try:
+        from cryptography.hazmat.backends import default_backend
+        from cryptography.hazmat.primitives import serialization, hashes
+        from cryptography.hazmat.primitives.asymmetric import padding
+    except ImportError:
+        LOGGER.error("The module %s is required to run this tap. Please install it using 'pip install %s'", module_name, module_name)
+        raise
+
 @utils.handle_top_exception(LOGGER)
 def main():
     args = utils.parse_args(REQUIRED_CONFIG_KEYS)
 
     #NB> this code will only work correctly when the local time is set to UTC because of calls to the  timestamp() method.
     os.environ['TZ'] = 'UTC'
+
+    ensure_cryptography_installed()
 
     mysql_conn = MySQLConnection(args.config)
     log_server_params(mysql_conn)
