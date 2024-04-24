@@ -16,6 +16,7 @@ setup(name='tap-mysql',
           'PyMySQL==1.1.1',
           'backoff==1.8.0',
           'mysql-replication==0.24',
+          'cryptography==42.0.5',
       ],
       extras_require={
           'dev': ['pylint==2.8.3']
