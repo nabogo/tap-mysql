@@ -28,6 +28,7 @@ import tap_mysql.sync_strategies.incremental as incremental
 
 from tap_mysql.connection import connect_with_backoff, MySQLConnection
 
+__version__ = '1.17.9'
 
 Column = collections.namedtuple('Column', [
     "table_schema",
@@ -733,6 +734,8 @@ def main():
     os.environ['TZ'] = 'UTC'
 
     ensure_cryptography_installed()
+
+    LOGGER.info('Starting tap-mysql version %s', __version__)
 
     mysql_conn = MySQLConnection(args.config)
     log_server_params(mysql_conn)
