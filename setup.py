@@ -16,7 +16,7 @@ setup(name='tap-mysql',
           'PyMySQL==1.1.1',
           'PyMySQL[rsa]==1.1.1',
           'backoff==1.8.0',
-          'mysql-replication==0.24',
+          'mysql-replication==0.31',
           'cryptography==42.0.5',
       ],
       extras_require={
