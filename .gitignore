@@ -103,4 +103,9 @@ ENV/
 # Emacs
 .tramp_history
 
+catalog.json
+catalog.*.json
 config.json
+config.*.json
+state.json
+state.*.json

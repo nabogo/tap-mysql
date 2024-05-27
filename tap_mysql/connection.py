@@ -12,6 +12,7 @@ LOGGER = singer.get_logger()
 
 CONNECT_TIMEOUT_SECONDS = 30
 READ_TIMEOUT_SECONDS = 3600
+WRITE_TIMEOUT_SECONDS = 3600
 
 # We need to hold onto this for self-signed SSL
 match_hostname = ssl.match_hostname
@@ -40,6 +41,10 @@ def connect_with_backoff(connection):
         except pymysql.err.InternalError as e:
              warnings.append('Could not set session.net_read_timeout. Error: ({}) {}'.format(*e.args))
 
+        try:
+            cur.execute("SET @@session.net_write_timeout={}".format(WRITE_TIMEOUT_SECONDS))
+        except pymysql.err.InternalError as e:
+             warnings.append('Could not set session.net_write_timeout. Error: ({}) {}'.format(*e.args))
 
         try:
             cur.execute('SET @@session.innodb_lock_wait_timeout=2700')

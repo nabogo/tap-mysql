@@ -10,6 +10,18 @@
         "--config", "config.json",
         "--catalog", "catalog.json",
         "--state", "state.json"
+      ],
+    },
+    {
+      "name": "Debug tap-mysql (silently)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "tap_mysql.__init__",
+      "args": [
+        "--config", "config.json",
+        "--catalog", "catalog.json",
+        "--state", "state.json",
+        ">", "/dev/null"
       ]
     }
   ]

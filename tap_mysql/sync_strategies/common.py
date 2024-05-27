@@ -201,7 +201,6 @@ def whitelist_bookmark_keys(bookmark_key_set, tap_stream_id, state):
                if non_whitelisted_bookmark_key not in bookmark_key_set]:
         singer.clear_bookmark(state, tap_stream_id, bk)
 
-
 def sync_query(cursor, catalog_entry, state, select_sql, columns, stream_version, params):
     replication_key = singer.get_bookmark(state,
                                           catalog_entry.tap_stream_id,
