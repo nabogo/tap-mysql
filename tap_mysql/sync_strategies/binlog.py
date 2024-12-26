@@ -105,7 +105,12 @@ def verify_log_file_exists(mysql_conn, log_file, log_pos):
 def fetch_current_log_file_and_pos(mysql_conn):
     with connect_with_backoff(mysql_conn) as open_conn:
         with open_conn.cursor() as cur:
-            cur.execute("SHOW MASTER STATUS")
+            try:
+                cur.execute("SHOW BINARY LOG STATUS")
+                result = cur.fetchone()
+            except:
+                cur.execute("SHOW MASTER STATUS")
+                result = cur.fetchone()
 
             result = cur.fetchone()
 
