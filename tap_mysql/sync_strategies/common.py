@@ -148,6 +148,8 @@ def to_utc_datetime_str(val):
     return utils.strftime(the_datetime.astimezone(tz=pytz.UTC))
 
 def get_json_from_binary_point(val):
+    if val is None:
+        return None
     result = struct.unpack('<IcLdd', val)
     srid, lon, lat = result[0], result[3], result[4]
     return json.dumps({
